@@ -1,0 +1,599 @@
+[
+  {
+    "name": "rspec",
+    "tests": [
+      {
+        "name": "failures-text",
+        "cmd": "rspec",
+        "args": [
+          "spec/models/user_spec.rb"
+        ],
+        "filter": "rspec",
+        "stdout": "Running via Spring preloader in process 12345\nRandomized with seed 54321\n..F...E..F..\n\nFailures:\n\n  1) User#full_name returns first and last name\n     Failure/Error: expect(user.full_name).to eq(\"John Doe\")\n       expected: \"John Doe\"\n            got: \"John D.\"\n     # /usr/local/lib/ruby/gems/3.2.0/gems/rspec-expectations-3.12.0/lib/rspec/expectations/fail_with.rb:37\n     # ./spec/models/user_spec.rb:15\n     # /usr/local/lib/ruby/gems/3.2.0/gems/rspec-core-3.12.0/lib/rspec/core/example.rb:258\n\nFailed examples:\n\nrspec ./spec/models/user_spec.rb:15 # User#full_name returns first and last name\n\n12 examples, 2 failures\n\nCoverage report generated for RSpec to /app/coverage.\n142 / 200 LOC (71.0%) covered.\n",
+        "wantHas": [
+          "12 examples, 2 failures",
+          "User#full_name",
+          "./spec/models/user_spec.rb:15",
+          "Failure/Error"
+        ],
+        "wantNotHas": [
+          "Running via Spring preloader",
+          "Coverage report",
+          "rspec-expectations-3.12.0"
+        ]
+      },
+      {
+        "name": "all-pass",
+        "cmd": "rspec",
+        "args": [],
+        "filter": "rspec",
+        "stdout": "Running via Spring preloader in process 999\n...\nFinished in 12.34 seconds (files took 3.21 seconds to load)\n3 examples, 0 failures\n",
+        "wantHas": [
+          "3 examples, 0 failures"
+        ],
+        "wantNotHas": [
+          "Finished in 12.34"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "rubocop",
+    "tests": [
+      {
+        "name": "offenses_grouped_by_file",
+        "cmd": "rubocop",
+        "args": [
+          "--format",
+          "json"
+        ],
+        "stdout": "{\"metadata\":{\"rubocop_version\":\"1.60.0\"},\"files\":[{\"path\":\"app/models/user.rb\",\"offenses\":[{\"severity\":\"convention\",\"message\":\"Trailing whitespace detected.\",\"cop_name\":\"Layout/TrailingWhitespace\",\"correctable\":true,\"location\":{\"start_line\":10}},{\"severity\":\"warning\",\"message\":\"Useless assignment to variable - `x`.\",\"cop_name\":\"Lint/UselessAssignment\",\"correctable\":false,\"location\":{\"start_line\":25}}]},{\"path\":\"app/controllers/users_controller.rb\",\"offenses\":[{\"severity\":\"error\",\"message\":\"Syntax error, unexpected end-of-input.\",\"cop_name\":\"Lint/Syntax\",\"correctable\":false,\"location\":{\"start_line\":30}}]}],\"summary\":{\"offense_count\":3,\"target_file_count\":2,\"inspected_file_count\":20,\"correctable_offense_count\":1}}",
+        "filter": "rubocop",
+        "wantHas": [
+          "app/models/user.rb:10 [Layout/TrailingWhitespace]",
+          "app/controllers/users_controller.rb:30 [Lint/Syntax]",
+          "offenses in 2 file(s)"
+        ],
+        "wantNotHas": [
+          "map["
+        ]
+      },
+      {
+        "name": "no_offenses",
+        "cmd": "rubocop",
+        "args": [
+          "--format",
+          "json"
+        ],
+        "stdout": "{\"metadata\":{\"rubocop_version\":\"1.60.0\"},\"files\":[],\"summary\":{\"offense_count\":0,\"target_file_count\":0,\"inspected_file_count\":15,\"correctable_offense_count\":0}}",
+        "filter": "rubocop",
+        "wantHas": [
+          "offenses in 0 file(s)"
+        ],
+        "wantNotHas": []
+      }
+    ]
+  },
+  {
+    "name": "rake",
+    "tests": [
+      {
+        "name": "all_pass_collapses_to_ok",
+        "cmd": "rake",
+        "args": [
+          "test"
+        ],
+        "stdout": "Run options: --seed 12345\n\n# Running:\n\n........\n\nFinished in 0.123456s, 64.8 runs/s, 72.9 assertions/s.\n\n8 runs, 9 assertions, 0 failures, 0 errors, 0 skips",
+        "filter": "rake",
+        "wantHas": [
+          "ok rake test: all tests passed"
+        ],
+        "wantNotHas": [
+          "Run options"
+        ]
+      },
+      {
+        "name": "failure_keeps_details_and_summary",
+        "cmd": "rake",
+        "args": [
+          "test"
+        ],
+        "stdout": "Run options: --seed 54321\n\n# Running:\n\n..F....\n\nFinished in 0.234567s, 29.8 runs/s\n\n  1) Failure:\nTestSomething#test_that_fails [/path/to/test.rb:15]:\nExpected: true\n  Actual: false\n\n7 runs, 7 assertions, 1 failures, 0 errors, 0 skips",
+        "filter": "rake",
+        "wantHas": [
+          "test_that_fails",
+          "Expected: true",
+          "1 failures"
+        ],
+        "wantNotHas": [
+          "Run options:"
+        ]
+      },
+      {
+        "name": "error_keeps_exception",
+        "cmd": "rake",
+        "args": [
+          "test"
+        ],
+        "stdout": "Run options: --seed 99999\n\n# Running:\n\n.E....\n\nFinished in 0.345678s, 17.4 runs/s\n\n  1) Error:\nTestOther#test_boom [/path/to/test.rb:42]:\nRuntimeError: something went wrong\n\n6 runs, 5 assertions, 0 failures, 1 errors, 0 skips",
+        "filter": "rake",
+        "wantHas": [
+          "test_boom",
+          "RuntimeError",
+          "1 errors"
+        ],
+        "wantNotHas": [
+          "Finished in"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "mvn",
+    "tests": [
+      {
+        "name": "test_failure_keeps_signal_drops_noise",
+        "cmd": "mvn",
+        "args": [
+          "test"
+        ],
+        "filter": "mvn",
+        "stdout": "[INFO] Scanning for projects...\n[INFO] -----< commons-cli:commons-cli >-----\n[INFO] Building Apache Commons CLI 1.11.1\n[INFO] --- maven-surefire-plugin:3.1.2:test (default-test) @ commons-cli ---\n[INFO] Running org.apache.commons.cli.UtilTest\n[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.012 s -- in org.apache.commons.cli.UtilTest\n[INFO] Running org.apache.commons.cli.RtkInducedFailTest\n[ERROR] Tests run: 1, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.033 s <<< FAILURE! -- in org.apache.commons.cli.RtkInducedFailTest\n[ERROR] org.apache.commons.cli.RtkInducedFailTest.rtkInducedFailure -- Time elapsed: 0.025 s <<< FAILURE!\norg.opentest4j.AssertionFailedError: expected: <expected> but was: <actual>\n\tat org.apache.commons.cli.RtkInducedFailTest.rtkInducedFailure(RtkInducedFailTest.java:25)\n\tat org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:1)\n[INFO] Results:\n[ERROR] Failures:\n[ERROR]   RtkInducedFailTest.rtkInducedFailure:25 expected: <expected> but was: <actual>\n[ERROR] Tests run: 6, Failures: 1, Errors: 0, Skipped: 0\n[INFO] BUILD FAILURE\n[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:test\n[ERROR] -> [Help 1]\n[ERROR] See https://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException\n",
+        "wantHas": [
+          "BUILD FAILURE",
+          "Failures: 1",
+          "AssertionFailedError",
+          "at org.apache.commons.cli.RtkInducedFailTest.rtkInducedFailure",
+          "Failed to execute goal"
+        ],
+        "wantNotHas": [
+          "Running org.apache.commons.cli.UtilTest",
+          "at org.junit.jupiter.api.Assertions",
+          "-> [Help 1]"
+        ]
+      },
+      {
+        "name": "compile_keeps_errors_drops_running",
+        "cmd": "mvn",
+        "args": [
+          "compile"
+        ],
+        "filter": "mvn",
+        "stdout": "[INFO] Scanning for projects...\n[INFO] -----< com.example:app >-----\n[INFO] Building app 1.0.0\n[INFO] --- maven-compiler-plugin:3.11:compile (default-compile) @ app ---\n[ERROR] COMPILATION ERROR :\n[ERROR] /src/main/java/com/example/App.java:[10,15] cannot find symbol\n[ERROR]   symbol:   variable foo\n[ERROR]   location: class com.example.App\n[INFO] BUILD FAILURE\n[INFO] Total time:  2.345 s\n[ERROR] Re-run Maven using the -X switch to enable full debug logging.\n",
+        "wantHas": [
+          "cannot find symbol",
+          "symbol:   variable foo",
+          "BUILD FAILURE",
+          "Total time:"
+        ],
+        "wantNotHas": [
+          "Scanning for projects",
+          "Re-run Maven using the -X switch"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "aws",
+    "tests": [
+      {
+        "name": "drops pagination and opaque tokens, keeps data",
+        "cmd": "aws",
+        "args": [
+          "logs",
+          "filter-log-events",
+          "--log-group-name",
+          "/svc"
+        ],
+        "stdout": "{\n  \"events\": [\n    { \"timestamp\": 1705312200000, \"message\": \"INFO: server started\" },\n    { \"timestamp\": 1705312260000, \"message\": \"ERROR: connection lost\" }\n  ],\n  \"nextForwardToken\": \"f/1234567890abcdef1234567890abcdef\",\n  \"nextBackwardToken\": \"b/1234567890abcdef1234567890abcdef\"\n}",
+        "filter": "aws",
+        "wantHas": [
+          "INFO: server started",
+          "ERROR: connection lost"
+        ],
+        "wantNotHas": [
+          "nextForwardToken"
+        ]
+      },
+      {
+        "name": "keeps failure lines, drops verbose ResourceProperties",
+        "cmd": "aws",
+        "args": [
+          "cloudformation",
+          "describe-stack-events"
+        ],
+        "stdout": "{\n  \"StackEvents\": [\n    {\n      \"LogicalResourceId\": \"MyBucket\",\n      \"ResourceStatus\": \"CREATE_FAILED\",\n      \"ResourceStatusReason\": \"Bucket already exists\",\n      \"ResourceProperties\": \"{\\\"BucketName\\\":\\\"my-bucket\\\",\\\"VersioningConfiguration\\\":{\\\"Status\\\":\\\"Enabled\\\"}}\"\n    }\n  ]\n}",
+        "filter": "aws",
+        "wantHas": [
+          "CREATE_FAILED",
+          "Bucket already exists"
+        ],
+        "wantNotHas": [
+          "ResourceProperties"
+        ]
+      },
+      {
+        "name": "strips secret env var lines",
+        "cmd": "aws",
+        "args": [
+          "lambda",
+          "list-functions"
+        ],
+        "stdout": "{\n  \"Functions\": [\n    {\n      \"FunctionName\": \"my-api\",\n      \"Runtime\": \"python3.12\",\n      \"Environment\": {\n        \"Variables\": {\n          \"SECRET_KEY\": \"s3cr3t\",\n          \"DB_PASSWORD\": \"hunter2\"\n        }\n      }\n    }\n  ]\n}",
+        "filter": "aws",
+        "wantHas": [
+          "my-api",
+          "python3.12"
+        ],
+        "wantNotHas": [
+          "s3cr3t"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "kubectl",
+    "tests": [
+      {
+        "name": "pods_collapse",
+        "cmd": "kubectl",
+        "args": [
+          "get",
+          "pods",
+          "-o",
+          "json"
+        ],
+        "stdout": "{\"apiVersion\":\"v1\",\"kind\":\"List\",\"items\":[{\"metadata\":{\"namespace\":\"default\",\"name\":\"web-7d9f\"},\"status\":{\"phase\":\"Running\",\"containerStatuses\":[{\"restartCount\":0}]}},{\"metadata\":{\"namespace\":\"default\",\"name\":\"db-5c8a\"},\"status\":{\"phase\":\"Pending\",\"containerStatuses\":[{\"restartCount\":0}]}},{\"metadata\":{\"namespace\":\"kube-system\",\"name\":\"dns-22ff\"},\"status\":{\"phase\":\"Running\",\"containerStatuses\":[{\"restartCount\":3}]}}]}",
+        "filter": "kubectl",
+        "wantHas": [
+          "3 pods",
+          "default/db-5c8a",
+          "Pending"
+        ],
+        "wantNotHas": [
+          "apiVersion"
+        ]
+      },
+      {
+        "name": "pods_empty",
+        "cmd": "kubectl",
+        "args": [
+          "get",
+          "pods",
+          "-o",
+          "json"
+        ],
+        "stdout": "{\"apiVersion\":\"v1\",\"kind\":\"List\",\"items\":[]}",
+        "filter": "kubectl",
+        "wantHas": [
+          "0 pods"
+        ],
+        "wantNotHas": [
+          "items"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "psql",
+    "tests": [
+      {
+        "name": "table_strips_separator_and_rowcount",
+        "cmd": "psql",
+        "args": [
+          "-c",
+          "select * from users"
+        ],
+        "stdout": " id | username    | email             | status\n----+-------------+-------------------+--------\n  1 | alice_smith | alice@example.com | active\n  2 | bob_jones   | bob@example.com   | active\n(2 rows)\n",
+        "filter": "psql",
+        "wantHas": [
+          "username",
+          "alice_smith",
+          "alice@example.com",
+          "bob_jones"
+        ],
+        "wantNotHas": [
+          "----+----"
+        ]
+      },
+      {
+        "name": "table_strips_rowcount_footer",
+        "cmd": "psql",
+        "args": [
+          "-c",
+          "select c from t"
+        ],
+        "stdout": " c\n---\n 1\n(1 row)\n",
+        "filter": "psql",
+        "wantHas": [
+          "c"
+        ],
+        "wantNotHas": [
+          "(1 row)"
+        ]
+      },
+      {
+        "name": "passthrough_command_output",
+        "cmd": "psql",
+        "args": [
+          "-c",
+          "copy t to stdout"
+        ],
+        "stdout": "SET\nCOPY 5\n",
+        "filter": "psql",
+        "wantHas": [
+          "COPY 5",
+          "SET"
+        ],
+        "wantNotHas": [
+          "(0 rows)"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "gh",
+    "tests": [
+      {
+        "name": "strip_badges_and_rules_from_pr_body",
+        "cmd": "gh",
+        "args": [
+          "pr",
+          "view",
+          "42"
+        ],
+        "stdout": "## Summary\n[![CI](https://img.shields.io/badge.svg)](https://github.com/actions)\n![screenshot](https://example.com/img.png)\n---\nAdded smart markdown filtering for gh view commands.\n***\n## Changes\n- Filter HTML comments\n- Filter badge lines",
+        "filter": "gh",
+        "wantHas": [
+          "## Summary",
+          "Added smart markdown filtering",
+          "## Changes",
+          "Filter HTML comments"
+        ],
+        "wantNotHas": [
+          "shields.io"
+        ]
+      },
+      {
+        "name": "strip_html_comments_and_image_lines",
+        "cmd": "gh",
+        "args": [
+          "issue",
+          "view",
+          "99"
+        ],
+        "stdout": "<!-- Auto-generated by bot -->\n## Description\nFix the broken thing.\n![diagram](https://example.com/d.png)\nDone.",
+        "filter": "gh",
+        "wantHas": [
+          "## Description",
+          "Fix the broken thing.",
+          "Done."
+        ],
+        "wantNotHas": [
+          "Auto-generated by bot"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "curl",
+    "tests": [
+      {
+        "name": "json_passthrough",
+        "cmd": "curl",
+        "args": [
+          "-s",
+          "https://api.example.com/status"
+        ],
+        "stdout": "{\"r2Ready\":true,\"status\":\"ok\"}",
+        "filter": "curl",
+        "wantHas": [
+          "r2Ready",
+          "status",
+          "ok"
+        ]
+      },
+      {
+        "name": "strips_progress_meter",
+        "cmd": "curl",
+        "args": [
+          "https://example.com/file.txt"
+        ],
+        "stdout": "  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current\n100  1256  100  1256    0     0   8200      0 --:--:-- --:--:-- --:--:--  8200\nHello, World!\nThis is plain text.",
+        "filter": "curl",
+        "wantHas": [
+          "Hello, World!",
+          "This is plain text."
+        ],
+        "wantNotHas": [
+          "% Total"
+        ]
+      },
+      {
+        "name": "failure_message",
+        "cmd": "curl",
+        "args": [
+          "https://nope.invalid"
+        ],
+        "stdout": "curl: (6) Could not resolve host: nope.invalid",
+        "filter": "curl",
+        "wantHas": [
+          "FAILED: curl request errored"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "grep",
+    "tests": [
+      {
+        "name": "matches_truncated_and_stripped",
+        "cmd": "grep",
+        "args": [
+          "-rn",
+          "TODO",
+          "src"
+        ],
+        "stdout": "src/main.rs:12:    // TODO fix this\n\u001b[35msrc/util.rs\u001b[0m:88:    let x = 1; // TODO refactor\n",
+        "filter": "grep",
+        "wantHas": [
+          "src/main.rs:12:",
+          "TODO fix this",
+          "src/util.rs:88:"
+        ],
+        "wantNotHas": [
+          "\u001b[35m"
+        ]
+      },
+      {
+        "name": "no_matches_empty",
+        "cmd": "grep",
+        "args": [
+          "-rn",
+          "NONEXISTENT",
+          "src"
+        ],
+        "stdout": "",
+        "filter": "grep",
+        "wantHas": [
+          "0 matches"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "find",
+    "tests": [
+      {
+        "name": "groups_paths_drops_permission_noise",
+        "cmd": "find",
+        "args": [
+          ".",
+          "-name",
+          "*.rs",
+          "-type",
+          "f"
+        ],
+        "stdout": "./src/main.rs\n./src/cmds/system/find_cmd.rs\n./src/core/tracking.rs\nfind: './target': Permission denied\n",
+        "filter": "find",
+        "wantHas": [
+          "src/main.rs",
+          "find_cmd.rs",
+          "tracking.rs"
+        ],
+        "wantNotHas": [
+          "Permission denied"
+        ]
+      },
+      {
+        "name": "empty_results",
+        "cmd": "find",
+        "args": [
+          ".",
+          "-name",
+          "*.xyz_nonexistent",
+          "-type",
+          "f"
+        ],
+        "stdout": "",
+        "filter": "find",
+        "wantHas": [
+          "0 results"
+        ]
+      },
+      {
+        "name": "caps_to_head",
+        "cmd": "find",
+        "args": [
+          ".",
+          "-name",
+          "*.txt"
+        ],
+        "stdout": "./a/f01.txt\n./a/f02.txt\n./a/f03.txt\n./a/f04.txt\n./a/f05.txt\n./a/f06.txt\n./a/f07.txt\n./a/f08.txt\n./a/f09.txt\n./a/f10.txt\n./a/f11.txt\n./a/f12.txt\n./a/f13.txt\n./a/f14.txt\n./a/f15.txt\n./a/f16.txt\n./a/f17.txt\n./a/f18.txt\n./a/f19.txt\n./a/f20.txt\n./a/f21.txt\n./a/f22.txt\n./a/f23.txt\n./a/f24.txt\n./a/f25.txt\n./a/f26.txt\n./a/f27.txt\n./a/f28.txt\n./a/f29.txt\n./a/f30.txt\n./a/f31.txt\n./a/f32.txt\n./a/f33.txt\n./a/f34.txt\n./a/f35.txt\n./a/f36.txt\n./a/f37.txt\n./a/f38.txt\n./a/f39.txt\n./a/f40.txt\n./a/f41.txt\n./a/f42.txt\n./a/f43.txt\n./a/f44.txt\n./a/f45.txt\n./a/f46.txt\n./a/f47.txt\n./a/f48.txt\n./a/f49.txt\n./a/f50.txt\n./a/f51.txt\n./a/f52.txt\n",
+        "filter": "find",
+        "wantHas": [
+          "f01.txt"
+        ],
+        "wantNotHas": [
+          "f52.txt"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "ls",
+    "tests": [
+      {
+        "name": "basic-strips-total-and-dotdirs",
+        "cmd": "ls",
+        "args": [
+          "-la"
+        ],
+        "stdout": "total 48\ndrwxr-xr-x  2 user  staff    64 Jan  1 12:00 .\ndrwxr-xr-x  2 user  staff    64 Jan  1 12:00 ..\ndrwxr-xr-x  2 user  staff    64 Jan  1 12:00 src\n-rw-r--r--  1 user  staff  1234 Jan  1 12:00 Cargo.toml\n-rw-r--r--  1 user  staff  5678 Jan  1 12:00 README.md\n",
+        "filter": "ls",
+        "wantHas": [
+          "src",
+          "Cargo.toml",
+          "README.md"
+        ],
+        "wantNotHas": [
+          "total 48"
+        ]
+      },
+      {
+        "name": "filters-noise-dirs",
+        "cmd": "ls",
+        "args": [
+          "-la"
+        ],
+        "stdout": "total 8\ndrwxr-xr-x  2 user  staff  64 Jan  1 12:00 node_modules\ndrwxr-xr-x  2 user  staff  64 Jan  1 12:00 .git\ndrwxr-xr-x  2 user  staff  64 Jan  1 12:00 target\ndrwxr-xr-x  2 user  staff  64 Jan  1 12:00 src\n-rw-r--r--  1 user  staff  100 Jan  1 12:00 main.rs\n",
+        "filter": "ls",
+        "wantHas": [
+          "src",
+          "main.rs"
+        ],
+        "wantNotHas": [
+          "node_modules"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "tree",
+    "tests": [
+      {
+        "name": "removes_summary_keeps_structure",
+        "cmd": "tree",
+        "args": [
+          "-L",
+          "2"
+        ],
+        "stdout": ".\n\u251c\u2500\u2500 src\n\u2502   \u2514\u2500\u2500 main.rs\n\u2514\u2500\u2500 Cargo.toml\n\n2 directories, 3 files\n",
+        "filter": "tree",
+        "wantHas": [
+          "main.rs",
+          "Cargo.toml",
+          "\u251c\u2500\u2500"
+        ],
+        "wantNotHas": [
+          "2 directories, 3 files"
+        ]
+      },
+      {
+        "name": "summary_singular_variation",
+        "cmd": "tree",
+        "args": [
+          "."
+        ],
+        "stdout": ".\n\u2514\u2500\u2500 file.txt\n\n1 directory, 0 files\n",
+        "filter": "tree",
+        "wantHas": [
+          "file.txt"
+        ],
+        "wantNotHas": [
+          "1 directory, 0 files"
+        ]
+      }
+    ]
+  }
+]

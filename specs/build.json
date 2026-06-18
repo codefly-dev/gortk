@@ -1,0 +1,91 @@
+[
+  {
+    "name": "make",
+    "match": { "command_regex": "^make\\b" },
+    "empty_text": "make: ok",
+    "limit": { "max_lines": 50 },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_blank": true,
+      "drop_regexps": ["^make\\[\\d+\\]:", "^Nothing to be done"]
+    }
+  },
+  {
+    "name": "gradle",
+    "match": { "command_regex": "^(gradle|gradlew|\\./gradlew)\\b" },
+    "empty_text": "gradle: ok",
+    "limit": { "max_lines": 50 },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_blank": true,
+      "truncate_lines_at": 150,
+      "drop_regexps": ["^> Configuring project", "^> Resolving dependencies", "^> Transform ", "^Download(ing)?\\s+http", "^\\s*<-+>\\s*$", "^> Task :.*UP-TO-DATE$", "^> Task :.*NO-SOURCE$", "^> Task :.*FROM-CACHE$", "^Starting a Gradle Daemon", "^Daemon will be stopped"]
+    }
+  },
+  {
+    "name": "cargo",
+    "match": { "command_regex": "^cargo\\s+(build|check|clippy|run|test)\\b" },
+    "match_output": [
+      { "pattern": "(?m)^\\s*Finished ", "unless": "(?i)error\\[|^error|warning:|test result: FAILED", "message": "cargo: ok" }
+    ],
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_blank": true,
+      "drop_regexps": ["^\\s*Compiling ", "^\\s*Updating ", "^\\s*Downloading ", "^\\s*Downloaded ", "^\\s*Blocking ", "^\\s*Finished "]
+    }
+  },
+  {
+    "name": "terraform-plan",
+    "match": { "command_regex": "^(terraform|tofu)\\s+plan\\b" },
+    "empty_text": "terraform plan: no changes detected",
+    "limit": { "max_lines": 80 },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_blank": true,
+      "drop_regexps": ["^Refreshing state", "^\\s*#.*unchanged", "^Acquiring state lock", "^Releasing state lock"]
+    }
+  },
+  {
+    "name": "brew-install",
+    "match": { "command_regex": "^brew\\s+(install|upgrade)\\b" },
+    "match_output": [
+      { "pattern": "already installed", "message": "brew: ok (already installed)" }
+    ],
+    "limit": { "max_lines": 20 },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_blank": true,
+      "drop_regexps": ["^==> Downloading", "^==> Pouring", "^Already downloaded:", "^###", "^==> Fetching"]
+    }
+  },
+  {
+    "name": "pre-commit",
+    "match": { "command_regex": "^pre-commit\\b" },
+    "limit": { "max_lines": 40 },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_blank": true,
+      "drop_regexps": ["^\\[INFO\\] Installing environment", "^\\[INFO\\] Once installed this environment will be reused", "^\\[INFO\\] This may take a few minutes"]
+    }
+  },
+  {
+    "name": "docker-build",
+    "match": { "command_regex": "^docker\\s+(build|buildx)\\b" },
+    "match_output": [
+      { "pattern": "(?m)writing image .*done|naming to .*done", "unless": "(?i)error|failed", "message": "docker build: ok" }
+    ],
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_blank": true,
+      "truncate_lines_at": 200,
+      "drop_regexps": ["^#\\d+ (sha256:|extracting|transferring|DONE|CACHED)", "^\\s*=> ", "^\\s*=> => "]
+    }
+  }
+]

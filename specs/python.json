@@ -1,0 +1,77 @@
+[
+  {
+    "name": "pytest",
+    "match": { "command_regex": "\\bpytest\\b" },
+    "match_output": [
+      { "pattern": "(?m)^=+ \\d+ passed[^=]*=+\\s*$", "unless": "(?i)failed|error|xfailed", "message": "pytest: ok" }
+    ],
+    "json": {
+      "array_field": "tests",
+      "item_template": "{nodeid} -> {outcome}",
+      "summary_template": "pytest: {count} tests"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_blank": true,
+      "drop_regexps": ["^platform ", "^rootdir:", "^plugins:", "^cachedir:", "^collecting ", "^=+ test session starts =+$", "\\[\\s*\\d+%\\]$"]
+    }
+  },
+  {
+    "name": "ruff",
+    "match": { "command_regex": "^ruff\\b" },
+    "match_output": [
+      { "pattern": "All checks passed", "message": "ruff: ok" }
+    ],
+    "json": {
+      "array_field": "",
+      "item_template": "{filename}:{location.row}:{location.column} {code} {message}",
+      "summary_template": "--- ruff: {count} issue(s)"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_blank": true,
+      "drop_regexps": ["^Found \\d+ error", "^\\[\\*\\] ", "^warning: "]
+    }
+  },
+  {
+    "name": "mypy",
+    "match": { "command_regex": "^mypy\\b" },
+    "match_output": [
+      { "pattern": "Success: no issues found", "message": "mypy: ok" }
+    ],
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_blank": true
+    }
+  },
+  {
+    "name": "pip-install",
+    "match": { "command_regex": "^pip3?\\s+install\\b" },
+    "match_output": [
+      { "pattern": "Successfully installed", "unless": "(?i)error|^ERROR", "message": "pip install: ok" }
+    ],
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_blank": true,
+      "drop_regexps": ["^Requirement already satisfied", "^Downloading ", "^\\s+Downloading ", "^Using cached ", "^\\s+Using cached ", "^Collecting "]
+    }
+  },
+  {
+    "name": "uv-sync",
+    "match": { "command_regex": "^uv\\s+(sync|pip\\s+install)\\b" },
+    "match_output": [
+      { "pattern": "Audited \\d+ package", "message": "uv: ok (up to date)" }
+    ],
+    "limit": { "max_lines": 20 },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_blank": true,
+      "drop_regexps": ["^\\s+Downloading ", "^\\s+Using cached ", "^\\s+Preparing ", "^Resolved \\d+ package"]
+    }
+  }
+]

@@ -1,0 +1,1027 @@
+[
+  {
+    "name": "ansible-playbook",
+    "match": {
+      "command_regex": "^ansible-playbook\\b"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_regexps": [
+        "^\\s*$",
+        "^ok: \\[",
+        "^skipping: \\["
+      ]
+    },
+    "limit": {
+      "max_lines": 60,
+      "keep": "tail"
+    }
+  },
+  {
+    "name": "basedpyright",
+    "match": {
+      "command_regex": "^basedpyright\\b"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_regexps": [
+        "^\\s*$",
+        "^Searching for source files",
+        "^Found \\d+ source file",
+        "^Pyright \\d+\\.\\d+",
+        "^basedpyright \\d+\\.\\d+"
+      ]
+    },
+    "limit": {
+      "max_lines": 50,
+      "keep": "tail"
+    },
+    "empty_text": "basedpyright: ok"
+  },
+  {
+    "name": "bundle-install",
+    "match": {
+      "command_regex": "^bundle\\s+(install|update)\\b"
+    },
+    "match_output": [
+      {
+        "pattern": "Bundle complete!",
+        "message": "ok bundle: complete"
+      },
+      {
+        "pattern": "Bundle updated!",
+        "message": "ok bundle: updated"
+      }
+    ],
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_regexps": [
+        "^Using ",
+        "^\\s*$",
+        "^Fetching gem metadata",
+        "^Resolving dependencies"
+      ]
+    },
+    "limit": {
+      "max_lines": 30,
+      "keep": "tail"
+    }
+  },
+  {
+    "name": "composer-install",
+    "match": {
+      "command_regex": "^composer\\s+(install|update|require)\\b"
+    },
+    "match_output": [
+      {
+        "pattern": "Nothing to install, update or remove",
+        "message": "ok (up to date)"
+      }
+    ],
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_regexps": [
+        "^\\s*$",
+        "^  - Downloading ",
+        "^  - Installing ",
+        "^Loading composer",
+        "^Updating dependencies"
+      ]
+    },
+    "limit": {
+      "max_lines": 30,
+      "keep": "tail"
+    }
+  },
+  {
+    "name": "df",
+    "match": {
+      "command_regex": "^df(\\s|$)"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "truncate_lines_at": 80
+    },
+    "limit": {
+      "max_lines": 20,
+      "keep": "tail"
+    }
+  },
+  {
+    "name": "dotnet-build",
+    "match": {
+      "command_regex": "^dotnet\\s+build\\b"
+    },
+    "match_output": [
+      {
+        "pattern": "0 Warning\\(s\\)\\n\\s+0 Error\\(s\\)",
+        "message": "ok (build succeeded)"
+      }
+    ],
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_regexps": [
+        "^\\s*$",
+        "^Microsoft \\(R\\)",
+        "^Copyright \\(C\\)",
+        "^  Determining projects"
+      ]
+    },
+    "limit": {
+      "max_lines": 40,
+      "keep": "tail"
+    }
+  },
+  {
+    "name": "du",
+    "match": {
+      "command_regex": "^du\\b"
+    },
+    "lines": {
+      "source": "both",
+      "drop_regexps": [
+        "^\\s*$"
+      ],
+      "truncate_lines_at": 120
+    },
+    "limit": {
+      "max_lines": 40,
+      "keep": "tail"
+    }
+  },
+  {
+    "name": "fail2ban-client",
+    "match": {
+      "command_regex": "^fail2ban-client\\b"
+    },
+    "lines": {
+      "source": "both",
+      "drop_regexps": [
+        "^\\s*$"
+      ]
+    },
+    "limit": {
+      "max_lines": 30,
+      "keep": "tail"
+    }
+  },
+  {
+    "name": "gcc",
+    "match": {
+      "command_regex": "^g(cc|\\+\\+)\\b"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_regexps": [
+        "^\\s*$",
+        "^\\s+\\|\\s*$",
+        "^In file included from",
+        "^\\s+from\\s",
+        "^\\d+ warnings? generated",
+        "^\\d+ errors? generated"
+      ]
+    },
+    "limit": {
+      "max_lines": 50,
+      "keep": "tail"
+    },
+    "empty_text": "gcc: ok"
+  },
+  {
+    "name": "gcloud",
+    "match": {
+      "command_regex": "^gcloud\\b"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_regexps": [
+        "^\\s*$"
+      ],
+      "truncate_lines_at": 120
+    },
+    "limit": {
+      "max_lines": 30,
+      "keep": "tail"
+    }
+  },
+  {
+    "name": "hadolint",
+    "match": {
+      "command_regex": "^hadolint\\b"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_regexps": [
+        "^\\s*$"
+      ],
+      "truncate_lines_at": 120
+    },
+    "limit": {
+      "max_lines": 40,
+      "keep": "tail"
+    }
+  },
+  {
+    "name": "helm",
+    "match": {
+      "command_regex": "^helm\\b"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_regexps": [
+        "^\\s*$",
+        "^W\\d{4}"
+      ],
+      "truncate_lines_at": 120
+    }
+  },
+  {
+    "name": "iptables",
+    "match": {
+      "command_regex": "^iptables\\b"
+    },
+    "lines": {
+      "source": "both",
+      "drop_regexps": [
+        "^\\s*$",
+        "^Chain DOCKER",
+        "^Chain BR-"
+      ],
+      "truncate_lines_at": 120
+    },
+    "limit": {
+      "max_lines": 50,
+      "keep": "tail"
+    }
+  },
+  {
+    "name": "jira",
+    "match": {
+      "command_regex": "^jira\\b"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_regexps": [
+        "^\\s*$",
+        "^\\s*--"
+      ],
+      "truncate_lines_at": 120
+    },
+    "limit": {
+      "max_lines": 40,
+      "keep": "tail"
+    }
+  },
+  {
+    "name": "jj",
+    "match": {
+      "command_regex": "^jj\\b"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_regexps": [
+        "^\\s*$",
+        "^Hint:",
+        "^Working copy now at:"
+      ],
+      "truncate_lines_at": 120
+    },
+    "limit": {
+      "max_lines": 30,
+      "keep": "tail"
+    }
+  },
+  {
+    "name": "jq",
+    "match": {
+      "command_regex": "^jq\\b"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_regexps": [
+        "^\\s*$"
+      ],
+      "truncate_lines_at": 120
+    },
+    "limit": {
+      "max_lines": 40,
+      "keep": "tail"
+    }
+  },
+  {
+    "name": "just",
+    "match": {
+      "command_regex": "^just\\b"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_regexps": [
+        "^\\s*$",
+        "^\\s*Available recipes:",
+        "^\\s*just --list"
+      ],
+      "truncate_lines_at": 150
+    },
+    "limit": {
+      "max_lines": 50,
+      "keep": "tail"
+    }
+  },
+  {
+    "name": "liquibase",
+    "match": {
+      "command_regex": "(?:^|/)liquibase(?:\\s|$)"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_regexps": [
+        "^\\s*$",
+        "^Starting Liquibase at",
+        "^Liquibase (?:Community|Open Source)",
+        "^Liquibase Home:",
+        "^Java Home",
+        "^Libraries:",
+        "^\\s*-\\s+\\S+\\.jar",
+        "^INFO \\[liquibase\\.integration\\]",
+        "^INFO \\[liquibase\\.core\\] Reading resource",
+        "^INFO \\[liquibase\\.core\\] Parsing",
+        "^(?:\\[?INFO\\]?\\s*)?#+$",
+        "^\\s*##"
+      ]
+    },
+    "limit": {
+      "max_lines": 200,
+      "keep": "tail"
+    },
+    "empty_text": "liquibase: ok"
+  },
+  {
+    "name": "markdownlint",
+    "match": {
+      "command_regex": "^markdownlint\\b"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_regexps": [
+        "^\\s*$"
+      ],
+      "truncate_lines_at": 120
+    },
+    "limit": {
+      "max_lines": 50,
+      "keep": "tail"
+    }
+  },
+  {
+    "name": "mise",
+    "match": {
+      "command_regex": "^mise\\s+(run|exec|install|upgrade)\\b"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_regexps": [
+        "^\\s*$",
+        "^mise\\s+(trust|install|upgrade).*✓",
+        "^mise\\s+Installing\\s",
+        "^mise\\s+Downloading\\s",
+        "^mise\\s+Extracting\\s",
+        "^mise\\s+\\w+@[\\d.]+ installed"
+      ],
+      "truncate_lines_at": 150
+    },
+    "limit": {
+      "max_lines": 50,
+      "keep": "tail"
+    },
+    "empty_text": "mise: ok"
+  },
+  {
+    "name": "mix-compile",
+    "match": {
+      "command_regex": "^mix\\s+compile(\\s|$)"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_regexps": [
+        "^Compiling \\d+ file",
+        "^\\s*$",
+        "^Generated\\s"
+      ]
+    },
+    "limit": {
+      "max_lines": 40,
+      "keep": "tail"
+    },
+    "empty_text": "mix compile: ok"
+  },
+  {
+    "name": "mix-format",
+    "match": {
+      "command_regex": "^mix\\s+format(\\s|$)"
+    },
+    "lines": {
+      "source": "both"
+    },
+    "limit": {
+      "max_lines": 20,
+      "keep": "tail"
+    },
+    "empty_text": "mix format: ok"
+  },
+  {
+    "name": "ollama",
+    "match": {
+      "command_regex": "^ollama\\s+run\\b"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_regexps": [
+        "^[⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏\\s]*$",
+        "^\\s*$"
+      ]
+    }
+  },
+  {
+    "name": "ping",
+    "match": {
+      "command_regex": "^ping\\b"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_regexps": [
+        "^PING ",
+        "^Pinging ",
+        "^\\d+ bytes from ",
+        "^Reply from .+: bytes=",
+        "^\\s*$"
+      ]
+    },
+    "limit": {
+      "max_lines": 4,
+      "keep": "tail"
+    }
+  },
+  {
+    "name": "pio-run",
+    "match": {
+      "command_regex": "^pio\\s+run"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_regexps": [
+        "^\\s*$",
+        "^Verbose mode",
+        "^CONFIGURATION:",
+        "^LDF:",
+        "^Library Manager:",
+        "^Compiling\\s",
+        "^Linking\\s",
+        "^Building\\s",
+        "^Checking size"
+      ]
+    },
+    "limit": {
+      "max_lines": 30,
+      "keep": "tail"
+    },
+    "empty_text": "pio run: ok"
+  },
+  {
+    "name": "poetry-install",
+    "match": {
+      "command_regex": "^poetry\\s+(install|lock|update)\\b"
+    },
+    "match_output": [
+      {
+        "pattern": "No dependencies to install or update|No changes\\.",
+        "message": "ok (up to date)"
+      }
+    ],
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_regexps": [
+        "^\\s*$",
+        "^  [-•] Downloading ",
+        "^  [-•] Installing .* \\(",
+        "^Creating virtualenv",
+        "^Using virtualenv"
+      ]
+    },
+    "limit": {
+      "max_lines": 30,
+      "keep": "tail"
+    }
+  },
+  {
+    "name": "ps",
+    "match": {
+      "command_regex": "^ps(\\s|$)"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "truncate_lines_at": 120
+    },
+    "limit": {
+      "max_lines": 30,
+      "keep": "tail"
+    }
+  },
+  {
+    "name": "quarto-render",
+    "match": {
+      "command_regex": "^quarto\\s+render"
+    },
+    "match_output": [
+      {
+        "pattern": "Output created:",
+        "message": "ok (output created)"
+      }
+    ],
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_regexps": [
+        "^\\s*$",
+        "^\\s*processing file:",
+        "^\\s*\\d+/\\d+\\s",
+        "^\\s*running",
+        "^\\s*Rendering",
+        "^pandoc ",
+        "^  Validating",
+        "^  Resolving"
+      ]
+    },
+    "limit": {
+      "max_lines": 20,
+      "keep": "tail"
+    }
+  },
+  {
+    "name": "rsync",
+    "match": {
+      "command_regex": "^rsync\\b"
+    },
+    "match_output": [
+      {
+        "pattern": "total size is",
+        "unless": "error|failed|No such file",
+        "message": "ok (synced)"
+      }
+    ],
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_regexps": [
+        "^\\s*$",
+        "^sending incremental file list",
+        "^sent \\d"
+      ]
+    },
+    "limit": {
+      "max_lines": 20,
+      "keep": "tail"
+    }
+  },
+  {
+    "name": "shellcheck",
+    "match": {
+      "command_regex": "^shellcheck\\b"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_regexps": [
+        "^\\s*$"
+      ]
+    },
+    "limit": {
+      "max_lines": 50,
+      "keep": "tail"
+    }
+  },
+  {
+    "name": "shopify-theme",
+    "match": {
+      "command_regex": "^shopify\\s+theme\\s+(push|pull)"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_regexps": [
+        "^\\s*$",
+        "^\\s*Uploading",
+        "^\\s*Downloading"
+      ]
+    },
+    "limit": {
+      "max_lines": 5,
+      "keep": "tail"
+    },
+    "empty_text": "shopify theme: ok"
+  },
+  {
+    "name": "skopeo",
+    "match": {
+      "command_regex": "^skopeo\\b"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_regexps": [
+        "^\\s*$",
+        "^Getting image source signatures",
+        "^Copying blob",
+        "^Copying config",
+        "^Writing manifest",
+        "^Storing signatures"
+      ],
+      "truncate_lines_at": 120
+    },
+    "limit": {
+      "max_lines": 30,
+      "keep": "tail"
+    },
+    "empty_text": "skopeo: ok"
+  },
+  {
+    "name": "sops",
+    "match": {
+      "command_regex": "^sops\\b"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_regexps": [
+        "^\\s*$"
+      ]
+    },
+    "limit": {
+      "max_lines": 40,
+      "keep": "tail"
+    }
+  },
+  {
+    "name": "spring-boot",
+    "match": {
+      "command_regex": "^(mvn\\s+spring-boot:run|java\\s+-jar.*\\.jar|gradle\\s+.*bootRun)"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "keep_regexps": [
+        "Started\\s.*\\sin\\s",
+        "Tomcat started on port",
+        "ERROR",
+        "WARN",
+        "Exception",
+        "Caused by:",
+        "Application run failed",
+        "BUILD\\s",
+        "Tests run:",
+        "FAILURE",
+        "listening on port"
+      ]
+    },
+    "limit": {
+      "max_lines": 30,
+      "keep": "tail"
+    }
+  },
+  {
+    "name": "ssh",
+    "match": {
+      "command_regex": "^ssh\\b"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_regexps": [
+        "^\\s*$",
+        "^Warning: Permanently added",
+        "^Connection to .+ closed",
+        "^Authenticated to",
+        "^debug1:",
+        "^OpenSSH_",
+        "^Pseudo-terminal"
+      ],
+      "truncate_lines_at": 120
+    },
+    "limit": {
+      "max_lines": 200,
+      "keep": "tail"
+    }
+  },
+  {
+    "name": "stat",
+    "match": {
+      "command_regex": "^stat\\b"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_regexps": [
+        "^\\s*$",
+        "^\\s*Device:",
+        "^\\s*Birth:"
+      ],
+      "truncate_lines_at": 120
+    },
+    "limit": {
+      "max_lines": 20,
+      "keep": "tail"
+    }
+  },
+  {
+    "name": "swift-build",
+    "match": {
+      "command_regex": "^swift\\s+build\\b"
+    },
+    "match_output": [
+      {
+        "pattern": "Build complete!",
+        "unless": "warning:|error:",
+        "message": "ok (build complete)"
+      }
+    ],
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_regexps": [
+        "^\\s*$",
+        "^Compiling ",
+        "^Linking "
+      ]
+    },
+    "limit": {
+      "max_lines": 40,
+      "keep": "tail"
+    }
+  },
+  {
+    "name": "systemctl-status",
+    "match": {
+      "command_regex": "^systemctl\\s+status\\b"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_regexps": [
+        "^\\s*$"
+      ]
+    },
+    "limit": {
+      "max_lines": 20,
+      "keep": "tail"
+    }
+  },
+  {
+    "name": "task",
+    "match": {
+      "command_regex": "^task\\b"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_regexps": [
+        "^\\s*$",
+        "^task: \\[.*\\] ",
+        "^task: Task .* is up to date"
+      ],
+      "truncate_lines_at": 150
+    },
+    "limit": {
+      "max_lines": 50,
+      "keep": "tail"
+    },
+    "empty_text": "task: ok"
+  },
+  {
+    "name": "tofu-fmt",
+    "match": {
+      "command_regex": "^tofu\\s+fmt(\\s|$)"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true
+    },
+    "limit": {
+      "max_lines": 30,
+      "keep": "tail"
+    },
+    "empty_text": "tofu fmt: ok (no changes)"
+  },
+  {
+    "name": "tofu-init",
+    "match": {
+      "command_regex": "^tofu\\s+init(\\s|$)"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_regexps": [
+        "^- Downloading",
+        "^- Installing",
+        "^- Using previously-installed",
+        "^\\s*$",
+        "^Initializing provider",
+        "^Initializing the backend",
+        "^Initializing modules"
+      ]
+    },
+    "limit": {
+      "max_lines": 20,
+      "keep": "tail"
+    },
+    "empty_text": "tofu init: ok"
+  },
+  {
+    "name": "tofu-plan",
+    "match": {
+      "command_regex": "^tofu\\s+plan(\\s|$)"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_regexps": [
+        "^Refreshing state",
+        "^\\s*#.*unchanged",
+        "^\\s*$",
+        "^Acquiring state lock",
+        "^Releasing state lock"
+      ]
+    },
+    "limit": {
+      "max_lines": 80,
+      "keep": "tail"
+    },
+    "empty_text": "tofu plan: no changes detected"
+  },
+  {
+    "name": "tofu-validate",
+    "match": {
+      "command_regex": "^tofu\\s+validate(\\s|$)"
+    },
+    "match_output": [
+      {
+        "pattern": "Success! The configuration is valid",
+        "message": "ok (valid)"
+      }
+    ],
+    "lines": {
+      "source": "both",
+      "strip_ansi": true
+    }
+  },
+  {
+    "name": "trunk-build",
+    "match": {
+      "command_regex": "^trunk\\s+build"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_regexps": [
+        "^\\s*$",
+        "^\\s*Compiling\\s",
+        "^\\s*Downloading\\s",
+        "^\\s*Fetching\\s",
+        "^\\s*Fresh\\s",
+        "^\\s*Checking\\s"
+      ]
+    },
+    "limit": {
+      "max_lines": 10,
+      "keep": "tail"
+    },
+    "empty_text": "trunk build: ok"
+  },
+  {
+    "name": "ty",
+    "match": {
+      "command_regex": "^ty\\b"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_regexps": [
+        "^\\s*$",
+        "^Checking \\d+ file",
+        "^ty \\d+\\.\\d+"
+      ]
+    },
+    "limit": {
+      "max_lines": 50,
+      "keep": "tail"
+    },
+    "empty_text": "ty: ok"
+  },
+  {
+    "name": "xcodebuild",
+    "match": {
+      "command_regex": "^xcodebuild\\b"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_regexps": [
+        "^\\s*$",
+        "^CompileC\\s",
+        "^CompileSwift\\s",
+        "^Ld\\s",
+        "^CreateBuildDirectory\\s",
+        "^MkDir\\s",
+        "^ProcessInfoPlistFile\\s",
+        "^CopySwiftLibs\\s",
+        "^CodeSign\\s",
+        "^Signing Identity:",
+        "^RegisterWithLaunchServices",
+        "^Validate\\s",
+        "^ProcessProductPackaging",
+        "^Touch\\s",
+        "^LinkStoryboards",
+        "^CompileStoryboard",
+        "^CompileAssetCatalog",
+        "^GenerateDSYMFile",
+        "^PhaseScriptExecution",
+        "^PBXCp\\s",
+        "^SetMode\\s",
+        "^SetOwnerAndGroup\\s",
+        "^Ditto\\s",
+        "^CpResource\\s",
+        "^CpHeader\\s",
+        "^\\s+cd\\s+/",
+        "^\\s+export\\s",
+        "^\\s+/Applications/Xcode",
+        "^\\s+/usr/bin/",
+        "^\\s+builtin-",
+        "^note: Using new build system"
+      ]
+    },
+    "limit": {
+      "max_lines": 60,
+      "keep": "tail"
+    },
+    "empty_text": "xcodebuild: ok"
+  },
+  {
+    "name": "yadm",
+    "match": {
+      "command_regex": "^yadm\\b"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_regexps": [
+        "^\\s*$",
+        "^\\s*\\(use \"git ",
+        "^\\s*\\(use \"yadm "
+      ],
+      "truncate_lines_at": 120
+    },
+    "limit": {
+      "max_lines": 40,
+      "keep": "tail"
+    }
+  },
+  {
+    "name": "yamllint",
+    "match": {
+      "command_regex": "^yamllint\\b"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_regexps": [
+        "^\\s*$"
+      ],
+      "truncate_lines_at": 120
+    },
+    "limit": {
+      "max_lines": 50,
+      "keep": "tail"
+    }
+  }
+]

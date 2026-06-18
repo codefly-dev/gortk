@@ -1,0 +1,12 @@
+# Built binaries (cmd/* compiled in place)
+/gortk
+/cmd/gortk/gortk
+/rtkcompat/cmd/rtk2json/rtk2json
+rtkcompat/rtk2json
+**/*.test
+*.out
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/

@@ -1,0 +1,43 @@
+[
+  {
+    "name": "git-push",
+    "match": { "command": "git", "subcommands": ["push"] },
+    "match_output": [
+      {
+        "pattern": "(?m)^To .+",
+        "unless": "(?i)error|rejected|fatal|\\bfailed\\b",
+        "message": "git push: ok"
+      }
+    ],
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_blank": true,
+      "drop_regexps": ["^Enumerating objects", "^Counting objects", "^Compressing objects", "^Writing objects", "^Total \\d", "^remote: Resolving", "^remote: Compressing", "^delta "]
+    }
+  },
+  {
+    "name": "git-status",
+    "match": { "command": "git", "subcommands": ["status"] },
+    "empty_text": "clean",
+    "lines": {
+      "source": "stdout",
+      "trim_space": true,
+      "drop_blank": true,
+      "drop_prefixes": ["(use ", "On branch", "Your branch", "Changes ", "Untracked files", "no changes added", "nothing to commit"]
+    }
+  },
+  {
+    "name": "git-pull",
+    "match": { "command": "git", "subcommands": ["pull", "fetch"] },
+    "match_output": [
+      { "pattern": "Already up to date", "message": "git pull: up to date" }
+    ],
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_blank": true,
+      "drop_regexps": ["^remote: Enumerating", "^remote: Counting", "^remote: Compressing", "^remote: Total", "^Receiving objects", "^Resolving deltas", "^Unpacking objects"]
+    }
+  }
+]

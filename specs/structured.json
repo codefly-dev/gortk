@@ -1,0 +1,331 @@
+[
+  {
+    "name": "rspec",
+    "match": {
+      "command_regex": "(^|/)rspec(\\s|$)"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_blank": true,
+      "drop_regexps": [
+        "(?i)running via spring preloader",
+        "(?i)(coverage report|simplecov|coverage/|\\.simplecov|All Files.*Lines)",
+        "[0-9]+ / [0-9]+ LOC",
+        "^DEPRECATION WARNING:",
+        "^Finished in \\d",
+        "^Randomized with seed",
+        "^# .*(/gems/|lib/rspec|lib/ruby/|vendor/bundle)",
+        "^Failed examples:",
+        "^rspec \\./(spec|test)/"
+      ],
+      "keep_regexps": [
+        "[0-9]+ examples?, [0-9]+ failures?",
+        "^\\s*[0-9]+\\)",
+        "Failure/Error",
+        "^# \\./(spec|test)/",
+        "^Failures:",
+        "\\./(spec|test)/\\S+:\\d+"
+      ],
+      "truncate_lines_at": 200
+    },
+    "limit": {
+      "max_lines": 60,
+      "keep": "head"
+    },
+    "empty_text": "RSpec: No output"
+  },
+  {
+    "name": "rubocop",
+    "match": {
+      "command_regex": "(^|/|\\s)rubocop(\\s|$)"
+    },
+    "json": {
+      "array_field": "files",
+      "item_template": "{{$p := .path}}{{range .offenses}}{{$p}}:{{.location.start_line}} [{{.cop_name}}] {{.message}}\n{{end}}",
+      "summary_template": "rubocop: offenses in {count} file(s)"
+    },
+    "empty_text": "RuboCop: No output"
+  },
+  {
+    "name": "rake",
+    "match": {
+      "command_regex": "(^|[/\\\\])rake( |$)"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_blank": true,
+      "drop_regexps": [
+        "^Run options:",
+        "^# Running:\\s*$",
+        "^Started with run options",
+        "^Progress: \\|",
+        "^Finished in ",
+        "^[\\s.EFS]+$"
+      ],
+      "keep_regexps": [
+        "\\b(runs?|tests?), \\d+ assertions?,",
+        "^\\s*\\d+\\)\\s+(Failure|Error):",
+        "Expected",
+        "Actual",
+        "Error:",
+        "\\[.*\\.rb:\\d+\\]"
+      ],
+      "truncate_lines_at": 120
+    },
+    "match_output": [
+      {
+        "pattern": "\\b(runs?|tests?), \\d+ assertions?, 0 failures?, 0 errors?",
+        "unless": "[1-9]\\d* (failures?|errors?)",
+        "message": "ok rake test: all tests passed"
+      }
+    ],
+    "limit": {
+      "max_lines": 60,
+      "keep": "tail"
+    },
+    "empty_text": "rake test: no tests ran"
+  },
+  {
+    "name": "mvn",
+    "match": {
+      "command_regex": "^(?:\\./mvnw|mvnw\\.cmd|mvnw|mvn)\\b(?:\\s+\\S+)*?\\s+(compile|test|integration-test|package|install|verify|deploy)\\b"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_blank": true,
+      "keep_regexps": [
+        "^\\[(?:INFO|ERROR)\\] BUILD (?:SUCCESS|FAILURE)$",
+        "^\\[INFO\\] -+< .+ >-+$",
+        "^\\[INFO\\] Reactor Summary for ",
+        "^\\[INFO\\] Building ",
+        "^\\[INFO\\] Installing ",
+        "^\\[INFO\\] Total time:",
+        "^\\[INFO\\] Finished at:",
+        "^\\[INFO\\] Results:",
+        "Tests run: \\d+, Failures: [1-9]",
+        "Tests run: \\d+, Failures: \\d+, Errors: [1-9]",
+        "<<< FAILURE!",
+        "<<< ERROR!",
+        "^\\[ERROR\\] Failures:",
+        "^\\[ERROR\\] Errors:",
+        "^\\[ERROR\\] Failed to execute goal",
+        "^\\[ERROR\\]   ",
+        "^\\[WARNING\\]",
+        "(?:Exception|Error|AssertionFailedError|AssertionError):",
+        "^\\s+at (?:com\\.|org\\.|net\\.|io\\.)",
+        "^\\[ERROR\\]"
+      ],
+      "drop_regexps": [
+        "^\\[INFO\\] Running ",
+        "^\\[INFO\\] --- .* @ .* ---$",
+        "^\\[INFO\\] Tests run: \\d+, Failures: 0, Errors: 0, ",
+        "Tests run: \\d+, Failures: 0, Errors: 0, Skipped: \\d+, Time elapsed: ",
+        "^\\[INFO\\] Downloading ",
+        "^\\[INFO\\] Downloaded ",
+        "^\\s+at org\\.junit\\.",
+        "^\\s+at junit\\.",
+        "^\\s+at org\\.apache\\.maven\\.surefire\\.",
+        "^\\s+at sun\\.reflect\\.",
+        "^\\s+at jdk\\.internal\\.reflect\\.",
+        "^\\s+at jdk\\.proxy",
+        "^\\s+at java\\.base/",
+        "^\\s+at java\\.lang\\.reflect\\.",
+        "^\\s+at java\\.util\\.",
+        "^\\[ERROR\\] See ",
+        "^\\[ERROR\\] -> \\[Help",
+        "^\\[ERROR\\] To see the full stack trace",
+        "^\\[ERROR\\] Re-run Maven",
+        "^\\[ERROR\\] For more information",
+        "^\\[ERROR\\] \\[Help",
+        "^\\[ERROR\\]$"
+      ]
+    },
+    "empty_text": "(no maven output)"
+  },
+  {
+    "name": "aws",
+    "match": {
+      "command_regex": "(^|/)aws(\\s|$)"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_blank": true,
+      "drop_regexps": [
+        "^\\s*\"(NextToken|nextForwardToken|nextBackwardToken|ResponseMetadata|RequestId|ReceiptHandle|MD5OfBody|MD5OfMessageAttributes|ETag|CodeSha256|RevisionId)\"\\s*:",
+        "^\\s*\"(certificateAuthority|CertificateAuthority)\"\\s*:",
+        "^\\s*\"ResourceProperties\"\\s*:",
+        "^\\s*\"AssumeRolePolicyDocument\"\\s*:",
+        "^\\s*\"(SECRET_KEY|DB_PASSWORD|API_KEY|password)\"\\s*:"
+      ],
+      "truncate_lines_at": 400
+    },
+    "limit": {
+      "max_lines": 200,
+      "keep": "head"
+    },
+    "empty_text": "(no output)"
+  },
+  {
+    "name": "kubectl",
+    "match": {
+      "command_regex": "^kubectl\\s+get\\s+(po|pod|pods)\\b"
+    },
+    "json": {
+      "array_field": "items",
+      "item_template": "{metadata.namespace}/{metadata.name} {status.phase}",
+      "summary_template": "{count} pods"
+    },
+    "empty_text": "No pods found"
+  },
+  {
+    "name": "psql",
+    "match": {
+      "command_regex": "(^|/)psql( |$)"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_blank": true,
+      "drop_regexps": [
+        "^\\s*[-+]+\\s*$",
+        "^\\s*\\(\\d+ rows?\\)\\s*$"
+      ],
+      "keep_regexps": []
+    },
+    "limit": {
+      "max_lines": 200,
+      "keep": "head"
+    },
+    "empty_text": ""
+  },
+  {
+    "name": "gh",
+    "match": {
+      "command_regex": "(^|/|\\s)gh(\\s|$)"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_blank": false,
+      "drop_regexps": [
+        "^\\s*<!--.*-->\\s*$",
+        "^\\s*\\[!\\[[^\\]]*\\]\\([^)]*\\)\\]\\([^)]*\\)\\s*$",
+        "^\\s*!\\[[^\\]]*\\]\\([^)]*\\)\\s*$",
+        "^\\s*(?:---+|\\*\\*\\*+|___+)\\s*$"
+      ],
+      "keep_regexps": []
+    },
+    "empty_text": "(body contained only badges/images/comments)"
+  },
+  {
+    "name": "curl",
+    "match": {
+      "command_regex": "(^|/)curl(\\s|$)"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_blank": false,
+      "drop_regexps": [
+        "^\\s*%\\s+Total\\s+%\\s+Received",
+        "^[0-9 ]+\\d+\\s+\\d+\\s+\\d+\\s+--:--:--",
+        "^\\s*\\*\\s",
+        "^\\s*>\\s",
+        "^\\s*<\\s"
+      ],
+      "truncate_lines_at": 500
+    },
+    "match_output": [
+      {
+        "pattern": "(?i)curl:\\s*\\(\\d+\\)",
+        "message": "FAILED: curl request errored (see curl exit code)"
+      }
+    ],
+    "limit": {
+      "max_lines": 200,
+      "keep": "head"
+    },
+    "empty_text": "(curl produced no output)"
+  },
+  {
+    "name": "grep",
+    "match": {
+      "command_regex": "(?:^|/)(?:grep|rg|egrep|fgrep)\\b"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_blank": true,
+      "drop_regexps": [],
+      "keep_regexps": [],
+      "truncate_lines_at": 200
+    },
+    "limit": {
+      "max_lines": 50,
+      "keep": "head"
+    },
+    "empty_text": "0 matches"
+  },
+  {
+    "name": "find",
+    "match": {
+      "command_regex": "^find\\b"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_blank": true,
+      "drop_regexps": [
+        "^find: .*: Permission denied$",
+        "^find: .*: No such file or directory$",
+        "^find: warning: ",
+        "^\\.$",
+        "^\\./$"
+      ],
+      "keep_regexps": [],
+      "truncate_lines_at": 200
+    },
+    "limit": {
+      "max_lines": 50,
+      "keep": "head"
+    },
+    "empty_text": "0 results"
+  },
+  {
+    "name": "ls",
+    "match": {
+      "command_regex": "^ls(\\s|$)"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_blank": true,
+      "drop_regexps": [
+        "^total\\s+\\d+",
+        "^\\S+\\s+\\d+\\s+\\S.*\\s+\\.\\.?$",
+        "(^|\\s)(node_modules|\\.git|target|__pycache__|\\.next|dist|build|\\.cache|\\.turbo|\\.vercel|\\.pytest_cache|\\.mypy_cache|\\.tox|\\.venv|venv|env|coverage|\\.nyc_output|\\.DS_Store|Thumbs\\.db|\\.idea|\\.vscode|\\.vs|\\.eggs)$",
+        "(^|\\s)\\S+\\.egg-info$"
+      ]
+    },
+    "empty_text": "(empty)"
+  },
+  {
+    "name": "tree",
+    "match": {
+      "command_regex": "(^|/)tree(\\s|$)"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_blank": true,
+      "drop_regexps": [
+        "director(y|ies).*file"
+      ]
+    },
+    "empty_text": ""
+  }
+]

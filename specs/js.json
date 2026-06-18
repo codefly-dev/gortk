@@ -1,0 +1,144 @@
+[
+  {
+    "name": "tsc",
+    "match": { "command_regex": "(^|\\s)tsc\\b" },
+    "empty_text": "tsc: ok",
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_blank": true,
+      "truncate_lines_at": 200
+    }
+  },
+  {
+    "name": "eslint",
+    "match": { "command_regex": "(^|\\s)eslint\\b" },
+    "empty_text": "eslint: ok",
+    "limit": { "max_lines": 80 },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_blank": true,
+      "truncate_lines_at": 200
+    }
+  },
+  {
+    "name": "prettier",
+    "match": { "command_regex": "(^|\\s)prettier\\b" },
+    "match_output": [
+      { "pattern": "All matched files use Prettier code style", "message": "prettier: ok" }
+    ],
+    "lines": { "source": "both", "strip_ansi": true, "drop_blank": true }
+  },
+  {
+    "name": "npm-install",
+    "match": { "command_regex": "^npm\\s+(install|i|ci|add)\\b" },
+    "match_output": [
+      { "pattern": "(?m)^(added|removed|changed) \\d+ package|^up to date", "unless": "(?i)npm err|npm error|ERR!", "message": "npm install: ok" }
+    ],
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_blank": true,
+      "drop_regexps": ["packages are looking for funding", "^\\s+run `npm fund`", "^npm warn deprecated", "^npm WARN deprecated"]
+    }
+  },
+  {
+    "name": "npm-run",
+    "match": { "command_regex": "^npm\\s+(run|test|start|exec)\\b" },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_blank": true,
+      "drop_regexps": ["^> ", "^npm warn ", "^npm WARN "]
+    }
+  },
+  {
+    "name": "pnpm",
+    "match": { "command_regex": "^pnpm\\s+(install|i|add|update)\\b" },
+    "match_output": [
+      { "pattern": "Already up to date", "message": "pnpm: up to date" }
+    ],
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_blank": true,
+      "drop_regexps": ["^Progress: resolved", "^Packages: ", "^\\s+\\+\\+\\+", "^Downloading "]
+    }
+  },
+  {
+    "name": "vitest",
+    "match": { "command_regex": "\\bvitest\\b" },
+    "match_output": [
+      { "pattern": "(?m)Test Files\\s+\\d+ passed", "unless": "(?i)fail", "message": "vitest: ok" }
+    ],
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_blank": true,
+      "drop_regexps": ["^\\s*RUN ", "^\\s*✓ ", "^\\s*·"]
+    }
+  },
+  {
+    "name": "biome",
+    "match": { "command_regex": "^biome\\b" },
+    "empty_text": "biome: ok",
+    "limit": { "max_lines": 50 },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_blank": true,
+      "drop_regexps": ["^Checked \\d+ file", "^Fixed \\d+ file", "^The following command", "^Run it with"]
+    }
+  },
+  {
+    "name": "oxlint",
+    "match": { "command_regex": "^oxlint\\b" },
+    "empty_text": "oxlint: ok",
+    "limit": { "max_lines": 50 },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_blank": true,
+      "drop_regexps": ["^Finished in \\d+", "^Found \\d+ warning"]
+    }
+  },
+  {
+    "name": "turbo",
+    "match": { "command_regex": "^turbo\\b" },
+    "empty_text": "turbo: ok",
+    "limit": { "max_lines": 50 },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_blank": true,
+      "truncate_lines_at": 150,
+      "drop_regexps": ["^\\s*cache (hit|miss|bypass)", "^\\s*\\d+ packages in scope", "^\\s*Tasks:\\s+\\d+", "^\\s*Duration:\\s+", "^\\s*Remote caching (enabled|disabled)"]
+    }
+  },
+  {
+    "name": "nx",
+    "match": { "command_regex": "^(pnpm\\s+)?nx\\b" },
+    "limit": { "max_lines": 60 },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_blank": true,
+      "truncate_lines_at": 150,
+      "drop_regexps": ["^\\s*>\\s*NX\\s+Running target", "^\\s*>\\s*NX\\s+Nx read the output", "^\\s*>\\s*NX\\s+View logs", "^———————", "^\\s+Nx \\(powered by"]
+    }
+  },
+  {
+    "name": "next",
+    "match": { "command_regex": "^next\\s+(build|lint)\\b" },
+    "match_output": [
+      { "pattern": "Compiled successfully", "unless": "(?i)error|failed", "message": "next: compiled ok" }
+    ],
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_blank": true,
+      "drop_regexps": ["^\\s*▲ Next", "^- info ", "^\\s*Creating an optimized production build", "^\\s*Collecting page data", "^\\s*Generating static pages"]
+    }
+  }
+]

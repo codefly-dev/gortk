@@ -1,0 +1,53 @@
+[
+  {
+    "name": "golangci-lint",
+    "match": { "command": "golangci-lint" },
+    "json": {
+      "array_field": "Issues",
+      "item_template": "{Pos.Filename}:{Pos.Line}:{Pos.Column} [{FromLinter}] {Text}",
+      "summary_template": "--- golangci-lint: {count} issue(s)"
+    }
+  },
+  {
+    "name": "go-build",
+    "match": { "command_regex": "^go\\s+(build|install)\\b" },
+    "empty_text": "go build: ok",
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_blank": true,
+      "drop_regexps": ["^go: downloading ", "^go: extracting ", "^go: finding "]
+    }
+  },
+  {
+    "name": "go-vet",
+    "match": { "command_regex": "^go\\s+vet\\b" },
+    "empty_text": "go vet: ok",
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_blank": true,
+      "drop_regexps": ["^go: downloading ", "^go: extracting "]
+    }
+  },
+  {
+    "name": "go-run",
+    "match": { "command_regex": "^go\\s+run\\b" },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_regexps": ["^go: downloading ", "^go: extracting "]
+    }
+  },
+  {
+    "name": "go-mod",
+    "match": { "command_regex": "^go\\s+mod\\b" },
+    "empty_text": "go mod: ok",
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_blank": true,
+      "drop_regexps": ["^go: downloading ", "^go: extracting ", "^go: finding ", "^go: added ", "^go: upgraded ", "^go: removed "]
+    }
+  }
+]
