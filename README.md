@@ -43,6 +43,51 @@ if !res.Lossless() {
 }
 ```
 
+## Token savings
+
+These are **measured**, not estimated: every number below comes from running the
+bundled fixtures through the default registry. Reproduce them yourself:
+
+```
+go test -run TestSavings -v
+```
+
+Across all bundled fixtures gortk removes **~47% of bytes** — and that figure is
+deliberately conservative, because roughly half the fixtures are
+*failure-preserving* correctness cases that gortk does **not** compress (a failed
+`grep`, a `git status` with changes → 0% by design). On the commands where there
+is noise to cut, the reduction is much larger:
+
+| command | in (B) | out (B) | saved |
+|---|---:|---:|---:|
+| `bundle install` | 725 | 59 | **92%** |
+| `liquibase` | 1617 | 287 | **82%** |
+| `kubectl` | 465 | 92 | **80%** |
+| `poetry install` | 445 | 89 | **80%** |
+| `rspec` | 840 | 203 | **76%** |
+| `dotnet build` | 875 | 275 | **69%** |
+| `xcodebuild` | 1569 | 539 | **66%** |
+| `rubocop` | 881 | 319 | **64%** |
+| `ssh` | 453 | 167 | **63%** |
+| `ping` | 1088 | 508 | **53%** |
+| `ls` | 525 | 259 | **51%** |
+
+Fixtures are small by design (they're correctness tests). Real output skews much
+higher: a green `go test ./...` with hundreds of passing tests collapses to a
+single summary line — far past 90%.
+
+### Measure your own
+
+Don't take our fixtures' word for it — measure your real traffic. Attach the
+`Stats` observer and gortk reports cumulative savings across everything it sees:
+
+```go
+stats := &gortk.Stats{}
+reg := gortk.Default().WithRedaction().Observe(stats.Observe)
+// ... run a session ...
+fmt.Println(stats.Report()) // "gortk: 142 cmds, 4.1 MiB -> 210 KiB (95% saved)"
+```
+
 ## Why not just use rtk?
 
 rtk has no Go binding; it's a Rust binary. Shelling out to it from an agent
@@ -51,14 +96,38 @@ accepting its **opaque, lossy** rewriting — fine for a human at a terminal,
 risky for an agent that might need the one line rtk dropped.
 
 gortk keeps the good idea (per-command output compression) and changes the
-defaults that matter for an agent:
+defaults that matter for an agent.
+
+## gortk vs rtk
 
 | | rtk | gortk |
 |---|---|---|
-| Form | external Rust binary | imported Go package |
-| Default | lossy rewrite | **lossless passthrough**; loss is opt-in per filter |
-| Loss visibility | none | every drop recorded in `Truncation` |
-| Coverage | 100+ commands | the few your agent actually runs |
+| Language / runtime | Rust binary | Go package, **embedded in-process** |
+| Distribution | shell out to an external binary | `go get`, no subprocess |
+| Raw speed | faster (compiled Rust) | fast enough — see note below |
+| Default for unknown command | rewrites only known commands | **lossless passthrough** |
+| Loss visibility | inline `… (N omitted)` markers | structured `Truncation` (agent-readable) |
+| Credential redaction | ✗ | ✓ — masks secrets, **including on passthrough** |
+| Filter authoring format | TOML | JSON (machine-generated from rtk's TOML) |
+| Runtime dependencies | — | **zero** (TOML parser isolated in `rtkcompat`) |
+| Catalog | 100+ commands (source of truth) | imported from rtk + extras, re-synced via `rtksync` |
+| Structured / JSON output | hand-written Rust parsers | declarative `json` stage + code filters |
+| Full-output recovery | `tee` | `Sink` + `Truncation.FullRef` |
+| Savings / discovery | `rtk gain` / `rtk discover` | `Stats` / `Discovery` observers |
+
+**On speed:** gortk does not try to beat a compiled Rust binary, and for this
+workload it doesn't need to. Compression is a few regexes over a few KB of text;
+the cost that actually matters is the process hop, and being an in-process
+library *avoids* the fork/exec + pipe marshalling that shelling out to rtk
+requires. The bet is dependency-free embedding and agent-safe defaults, not
+raw throughput.
+
+**On TOML vs JSON:** this isn't a performance choice — it's about dependencies.
+rtk authors its filters in TOML; gortk stores the *same rules* as JSON so the
+runtime can parse them with the standard library and stay zero-dependency (a TOML
+parser would be an import). We get rtk's catalog *without* its dependency by
+machine-translating TOML → JSON with `rtksync` (which keeps the TOML parser
+quarantined in the `rtkcompat` module). So: TOML to author upstream, JSON to ship.
 
 ## Two halves: input (run) and output (parse)
 
@@ -132,14 +201,7 @@ stood out and shaped the design:
    exact same split: code `Filter`s in `filters.go`, declarative `Spec`s for the
    rest.
 
-Where gortk deliberately differs from rtk:
-
-| | rtk | gortk |
-|---|---|---|
-| Loss reporting | inline `... (N omitted)` markers in text | structured `Truncation` on every `Result` (agent-readable) |
-| JSON | only via hand-written Rust parsers | declarative `json` template stage in a Spec — no code needed |
-| Form | external Rust binary | imported Go package |
-| Default for unmatched cmd | n/a (rewrites only known cmds) | lossless passthrough |
+For how the two compare overall, see [gortk vs rtk](#gortk-vs-rtk) above.
 
 ### Parity with rtk's runtime features
 
