@@ -1,3 +1,3 @@
-module github.com/codefly-dev/gortk
+module github.com/mind-build/gortk
 
 go 1.25

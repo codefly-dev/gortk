@@ -19,8 +19,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/codefly-dev/gortk"
-	"github.com/codefly-dev/gortk/rtkcompat"
+	"github.com/mind-build/gortk"
+	"github.com/mind-build/gortk/rtkcompat"
 )
 
 func main() {

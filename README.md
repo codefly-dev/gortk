@@ -1,13 +1,13 @@
 # gortk
 
-[![CI](https://github.com/codefly-dev/gortk/actions/workflows/ci.yml/badge.svg)](https://github.com/codefly-dev/gortk/actions/workflows/ci.yml)
-[![Go Reference](https://pkg.go.dev/badge/github.com/codefly-dev/gortk.svg)](https://pkg.go.dev/github.com/codefly-dev/gortk)
-[![Go Report Card](https://goreportcard.com/badge/github.com/codefly-dev/gortk)](https://goreportcard.com/report/github.com/codefly-dev/gortk)
-[![Go Version](https://img.shields.io/github/go-mod/go-version/codefly-dev/gortk)](https://github.com/codefly-dev/gortk/blob/main/go.mod)
-[![Release](https://img.shields.io/github/v/release/codefly-dev/gortk?sort=semver)](https://github.com/codefly-dev/gortk/releases)
+[![CI](https://github.com/mind-build/gortk/actions/workflows/ci.yml/badge.svg)](https://github.com/mind-build/gortk/actions/workflows/ci.yml)
+[![Go Reference](https://pkg.go.dev/badge/github.com/mind-build/gortk.svg)](https://pkg.go.dev/github.com/mind-build/gortk)
+[![Go Report Card](https://goreportcard.com/badge/github.com/mind-build/gortk)](https://goreportcard.com/report/github.com/mind-build/gortk)
+[![Go Version](https://img.shields.io/github/go-mod/go-version/mind-build/gortk)](https://github.com/mind-build/gortk/blob/main/go.mod)
+[![Release](https://img.shields.io/github/v/release/mind-build/gortk?sort=semver)](https://github.com/mind-build/gortk/releases)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](./LICENSE)
 [![Dependencies](https://img.shields.io/badge/dependencies-zero-brightgreen.svg)](./go.mod)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/codefly-dev/gortk/pulls)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/mind-build/gortk/pulls)
 
 A Go-native take on [rtk](https://github.com/rtk-ai/rtk) (the Rust "token
 killer"): it compresses shell-command output before it reaches an LLM context
@@ -22,7 +22,7 @@ dedicated filter passes through untouched.
 ## Install
 
 ```
-go get github.com/codefly-dev/gortk
+go get github.com/mind-build/gortk
 ```
 
 Zero dependencies — the core is pure Go stdlib.
