@@ -550,6 +550,164 @@
     }
   },
   {
+    "name": "pulumi-destroy",
+    "match": {
+      "command_regex": "^pulumi\\s+destroy(\\s|$)"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_regexps": [
+        "^\\s*$",
+        "^Destroying \\(",
+        "^Previewing (update|destroy)",
+        "^View in Browser",
+        "^View Live:",
+        "^Duration:",
+        "^Permalink:",
+        "^\\s*Type\\s+Name\\s+",
+        "^Loading policy packs",
+        "^@ (Previewing (update|destroy)|Destroying)",
+        "^More information at:",
+        "^Use `pulumi ",
+        "^The resources in the stack have been deleted",
+        "^If you want to remove the stack completely",
+        "^\\s+-\\s+.*\\bdeleting\\s+\\(",
+        "^\\s{4,}at\\s+\\S+\\s*\\(",
+        "^\\s{4,}at\\s+/",
+        "^\\s+at\\s+processTicksAndRejections",
+        "^\\s+promise:\\s+Promise",
+        "^\\s+\\[Circular",
+        "^\\s*\u003cref\\s+\\*\\d"
+      ]
+    },
+    "empty_text": "pulumi destroy: nothing to destroy"
+  },
+  {
+    "name": "pulumi-preview",
+    "match": {
+      "command_regex": "^pulumi\\s+preview(\\s|$)"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_regexps": [
+        "^\\s*$",
+        "^Previewing update",
+        "^View in Browser",
+        "^View Live:",
+        "^Duration:",
+        "^Permalink:",
+        "^\\s*Type\\s+Name\\s+",
+        "^Loading policy packs",
+        "^@ Previewing update",
+        "^More information at:",
+        "^Use `pulumi ",
+        "^\\s{4,}at\\s+\\S+\\s*\\(",
+        "^\\s{4,}at\\s+/",
+        "^\\s+at\\s+processTicksAndRejections",
+        "^\\s+promise:\\s+Promise",
+        "^\\s+\\[Circular",
+        "^\\s*\u003cref\\s+\\*\\d",
+        "^\\s+pulumi:pulumi:Stack\\s+\\S+\\s+running\\s*$",
+        "^\\s+\\S+\\s+\\S+\\s+\\d+\\s+errors?\\s*$",
+        "^\\s+\\S+\\s+\\S+(?:\\s+\\S+)?\\s+\\d+\\s+errors?\\s*$"
+      ]
+    },
+    "empty_text": "pulumi preview: no changes"
+  },
+  {
+    "name": "pulumi-refresh",
+    "match": {
+      "command_regex": "^pulumi\\s+refresh(\\s|$)"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_regexps": [
+        "^\\s*$",
+        "^Refreshing \\(",
+        "^Previewing (refresh|update)",
+        "^View in Browser",
+        "^View Live:",
+        "^Duration:",
+        "^Permalink:",
+        "^\\s*Type\\s+Name\\s+",
+        "^Loading policy packs",
+        "^@ (Previewing refresh|Refreshing)",
+        "^More information at:",
+        "^Use `pulumi ",
+        "^\\s+.*\\brefreshing\\s+\\(",
+        "^\\s+[~+\\-]\\s+[^ ]+\\s+\\S+\\s+refreshing\\s*$",
+        "^\\s{4,}at\\s+\\S+\\s*\\(",
+        "^\\s{4,}at\\s+/",
+        "^\\s+at\\s+processTicksAndRejections",
+        "^\\s+promise:\\s+Promise",
+        "^\\s+\\[Circular",
+        "^\\s*\u003cref\\s+\\*\\d"
+      ]
+    },
+    "empty_text": "pulumi refresh: no drift"
+  },
+  {
+    "name": "pulumi-stack",
+    "match": {
+      "command_regex": "^pulumi\\s+stack(\\s+(ls|output|history|select|init|rm|rename|tag|unselect|change-secrets-provider)\\b|\\s*$)"
+    },
+    "match_output": [
+      {
+        "pattern": "No stacks found",
+        "message": "pulumi stack: empty"
+      }
+    ],
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_regexps": [
+        "^\\s*$",
+        "^Please choose a stack",
+        "^More information at:",
+        "^Use `pulumi ",
+        "^Current stack outputs \\(0\\):",
+        "^\\s+No output values currently"
+      ]
+    },
+    "empty_text": "pulumi stack: ok"
+  },
+  {
+    "name": "pulumi-up",
+    "match": {
+      "command_regex": "^pulumi\\s+up(\\s|$)"
+    },
+    "lines": {
+      "source": "both",
+      "strip_ansi": true,
+      "drop_regexps": [
+        "^\\s*$",
+        "^Updating \\(",
+        "^Previewing update",
+        "^View in Browser",
+        "^View Live:",
+        "^Duration:",
+        "^Permalink:",
+        "^\\s*Type\\s+Name\\s+",
+        "^Loading policy packs",
+        "^@ (Previewing update|Updating)",
+        "^More information at:",
+        "^Use `pulumi ",
+        "^\\s+\\+\\s+.*\\bcreating\\s+\\(",
+        "^\\s+~\\s+.*\\bupdating\\s+\\(",
+        "^\\s{4,}at\\s+\\S+\\s*\\(",
+        "^\\s{4,}at\\s+/",
+        "^\\s+at\\s+processTicksAndRejections",
+        "^\\s+promise:\\s+Promise",
+        "^\\s+\\[Circular",
+        "^\\s*\u003cref\\s+\\*\\d"
+      ]
+    },
+    "empty_text": "pulumi up: no changes"
+  },
+  {
     "name": "quarto-render",
     "match": {
       "command_regex": "^quarto\\s+render"

@@ -26,7 +26,7 @@ import (
 	"sort"
 
 	"github.com/BurntSushi/toml"
-	"github.com/mind-build/gortk"
+	"github.com/codefly-dev/gortk"
 )
 
 // tomlDoc is the shape of an rtk filter file: a [filters.<name>] table per
