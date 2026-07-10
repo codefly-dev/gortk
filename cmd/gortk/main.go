@@ -26,7 +26,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/mind-build/gortk"
+	"github.com/codefly-dev/gortk"
 )
 
 func main() {
