@@ -19,8 +19,8 @@
 // Flags:
 //
 //	-out      output path           (default ../specs/rtk.json)
-//	-repo     rtk git URL           (default https://github.com/rtk-ai/rtk)
-//	-ref      git ref/tag to clone  (default main)
+//	-repo     rtk git URL           (default https://github.com/codefly-dev/rtk)
+//	-ref      git ref/tag to clone  (default: repo default branch)
 //	-dir      existing rtk checkout  (skips cloning)
 //	-glob     filter glob in rtk    (default src/filters/*.toml)
 //	-exclude  comma-separated filter names to skip
@@ -51,8 +51,8 @@ func main() {
 
 func run() error {
 	out := flag.String("out", filepath.Join("..", "specs", "rtk.json"), "output path for the generated specs")
-	repo := flag.String("repo", "https://github.com/rtk-ai/rtk", "rtk git URL")
-	ref := flag.String("ref", "main", "git ref/tag to clone")
+	repo := flag.String("repo", "https://github.com/codefly-dev/rtk", "rtk git URL")
+	ref := flag.String("ref", "", "git ref/tag to clone (default: the repo's default branch)")
 	dir := flag.String("dir", "", "existing rtk checkout (skips cloning)")
 	glob := flag.String("glob", filepath.Join("src", "filters", "*.toml"), "filter glob within the rtk repo")
 	excludeCSV := flag.String("exclude", "", "comma-separated filter names to skip")
@@ -147,7 +147,12 @@ func convert(files []string, exclude map[string]bool) ([]byte, error) {
 }
 
 func gitClone(url, ref, dst string) error {
-	cmd := exec.Command("git", "clone", "--depth", "1", "--branch", ref, url, dst)
+	args := []string{"clone", "--depth", "1"}
+	if ref != "" {
+		args = append(args, "--branch", ref)
+	}
+	args = append(args, url, dst)
+	cmd := exec.Command("git", args...)
 	cmd.Stdout, cmd.Stderr = os.Stderr, os.Stderr
 	return cmd.Run()
 }
