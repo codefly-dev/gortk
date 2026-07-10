@@ -66,6 +66,18 @@ func run() error {
 		}
 	}
 
+	// Filters gortk curates natively (the sibling spec files next to -out)
+	// always win over the upstream import: a name defined in build.json,
+	// js.json, … is skipped here so the catalog never carries duplicates,
+	// and -check regenerates with the exact same rule.
+	native, err := siblingSpecNames(*out)
+	if err != nil {
+		return err
+	}
+	for n := range native {
+		exclude[n] = true
+	}
+
 	rtkDir := *dir
 	if rtkDir == "" {
 		tmp, err := os.MkdirTemp("", "rtksync-")
@@ -144,6 +156,46 @@ func convert(files []string, exclude map[string]bool) ([]byte, error) {
 		return nil, err
 	}
 	return append(buf, '\n'), nil
+}
+
+// siblingSpecNames collects every filter name defined by the curated spec
+// files that live next to outPath (skipping outPath itself). These names are
+// excluded from the upstream import so native specs always take precedence.
+func siblingSpecNames(outPath string) (map[string]bool, error) {
+	siblings, err := filepath.Glob(filepath.Join(filepath.Dir(outPath), "*.json"))
+	if err != nil {
+		return nil, err
+	}
+	outAbs, err := filepath.Abs(outPath)
+	if err != nil {
+		return nil, err
+	}
+	names := map[string]bool{}
+	for _, p := range siblings {
+		abs, err := filepath.Abs(p)
+		if err != nil {
+			return nil, err
+		}
+		if abs == outAbs {
+			continue
+		}
+		data, err := os.ReadFile(p)
+		if err != nil {
+			return nil, err
+		}
+		var specs []struct {
+			Name string `json:"name"`
+		}
+		if err := json.Unmarshal(data, &specs); err != nil {
+			return nil, fmt.Errorf("%s: %w", p, err)
+		}
+		for _, s := range specs {
+			if s.Name != "" {
+				names[s.Name] = true
+			}
+		}
+	}
+	return names, nil
 }
 
 func gitClone(url, ref, dst string) error {
