@@ -20,7 +20,7 @@
 //
 //	-out      output path           (default ../specs/rtk.json)
 //	-repo     rtk git URL           (default https://github.com/rtk-ai/rtk)
-//	-ref      git ref/tag to clone  (default main)
+//	-ref      git ref/tag to clone  (default remote HEAD)
 //	-dir      existing rtk checkout  (skips cloning)
 //	-glob     filter glob in rtk    (default src/filters/*.toml)
 //	-exclude  comma-separated filter names to skip
@@ -52,7 +52,7 @@ func main() {
 func run() error {
 	out := flag.String("out", filepath.Join("..", "specs", "rtk.json"), "output path for the generated specs")
 	repo := flag.String("repo", "https://github.com/rtk-ai/rtk", "rtk git URL")
-	ref := flag.String("ref", "main", "git ref/tag to clone")
+	ref := flag.String("ref", "", "git ref/tag to clone (default: remote HEAD)")
 	dir := flag.String("dir", "", "existing rtk checkout (skips cloning)")
 	glob := flag.String("glob", filepath.Join("src", "filters", "*.toml"), "filter glob within the rtk repo")
 	excludeCSV := flag.String("exclude", "", "comma-separated filter names to skip")
@@ -65,6 +65,13 @@ func run() error {
 			exclude[n] = true
 		}
 	}
+	siblingNames, err := siblingSpecNames(*out)
+	if err != nil {
+		return err
+	}
+	for name := range siblingNames {
+		exclude[name] = true
+	}
 
 	rtkDir := *dir
 	if rtkDir == "" {
@@ -73,7 +80,7 @@ func run() error {
 			return err
 		}
 		defer os.RemoveAll(tmp)
-		fmt.Fprintf(os.Stderr, "cloning %s@%s ...\n", *repo, *ref)
+		fmt.Fprintf(os.Stderr, "cloning %s@%s ...\n", *repo, displayRef(*ref))
 		if err := gitClone(*repo, *ref, tmp); err != nil {
 			return fmt.Errorf("clone rtk: %w", err)
 		}
@@ -100,17 +107,17 @@ func run() error {
 			return fmt.Errorf("read %s: %w", *out, err)
 		}
 		if !bytes.Equal(normalizeEOL(existing), normalizeEOL(generated)) {
-			fmt.Fprintf(os.Stderr, "%s is OUT OF DATE with rtk@%s — run rtksync and commit.\n", *out, *ref)
+			fmt.Fprintf(os.Stderr, "%s is OUT OF DATE with rtk@%s — run rtksync and commit.\n", *out, displayRef(*ref))
 			return fmt.Errorf("drift detected")
 		}
-		fmt.Fprintf(os.Stderr, "%s is in sync with rtk@%s\n", *out, *ref)
+		fmt.Fprintf(os.Stderr, "%s is in sync with rtk@%s\n", *out, displayRef(*ref))
 		return nil
 	}
 
 	if err := os.WriteFile(*out, generated, 0o644); err != nil {
 		return err
 	}
-	fmt.Fprintf(os.Stderr, "wrote %s from rtk@%s (%d files)\n", *out, *ref, len(files))
+	fmt.Fprintf(os.Stderr, "wrote %s from rtk@%s (%d files)\n", *out, displayRef(*ref), len(files))
 	return nil
 }
 
@@ -147,9 +154,60 @@ func convert(files []string, exclude map[string]bool) ([]byte, error) {
 }
 
 func gitClone(url, ref, dst string) error {
-	cmd := exec.Command("git", "clone", "--depth", "1", "--branch", ref, url, dst)
+	cmd := exec.Command("git", gitCloneArgs(url, ref, dst)...)
 	cmd.Stdout, cmd.Stderr = os.Stderr, os.Stderr
 	return cmd.Run()
+}
+
+// gitCloneArgs follows the remote's advertised HEAD unless the caller asks
+// for an explicit release or branch. Upstream rtk has changed its default
+// branch before, so baking a branch name into the importer makes every
+// unpinned parity run fragile.
+func gitCloneArgs(url, ref, dst string) []string {
+	args := []string{"clone", "--depth", "1"}
+	if ref = strings.TrimSpace(ref); ref != "" {
+		args = append(args, "--branch", ref)
+	}
+	return append(args, url, dst)
+}
+
+func displayRef(ref string) string {
+	if ref = strings.TrimSpace(ref); ref != "" {
+		return ref
+	}
+	return "remote HEAD"
+}
+
+// siblingSpecNames returns names already owned by the local catalog files next
+// to the generated rtk file. Upstream periodically adopts filters gortk already
+// ships; excluding those names at generation time preserves the local curated
+// implementation and keeps the embedded catalog unambiguous.
+func siblingSpecNames(out string) (map[string]bool, error) {
+	dir := filepath.Dir(out)
+	outputName := filepath.Base(out)
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		return nil, fmt.Errorf("read sibling spec directory %s: %w", dir, err)
+	}
+	names := make(map[string]bool)
+	for _, entry := range entries {
+		if entry.IsDir() || filepath.Ext(entry.Name()) != ".json" || entry.Name() == outputName {
+			continue
+		}
+		path := filepath.Join(dir, entry.Name())
+		data, err := os.ReadFile(path)
+		if err != nil {
+			return nil, fmt.Errorf("read sibling spec %s: %w", path, err)
+		}
+		specs, err := gortk.LoadSpecs(data)
+		if err != nil {
+			return nil, fmt.Errorf("parse sibling spec %s: %w", path, err)
+		}
+		for _, spec := range specs {
+			names[spec.Name] = true
+		}
+	}
+	return names, nil
 }
 
 // normalizeEOL strips CR so a drift check doesn't trip on line-ending diffs.

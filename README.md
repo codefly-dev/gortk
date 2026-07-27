@@ -576,9 +576,10 @@ cd rtkcompat && go run ./cmd/rtksync           # equivalent, run directly
 cd rtkcompat && go run ./cmd/rtksync -check    # fail if specs/rtk.json is stale
 ```
 
-Pin a release with `-ref v0.42.4`, use a local checkout with `-dir path/to/rtk`,
-or drop filters with `-exclude name1,name2`. The runtime never touches rtk or
-TOML — `specs/*.json` is plain JSON, loaded by the zero-dependency core.
+By default the importer follows the remote's advertised HEAD. Pin a release
+with `-ref v0.42.4`, use a local checkout with `-dir path/to/rtk`, or drop
+filters with `-exclude name1,name2`. The runtime never touches rtk or TOML —
+`specs/*.json` is plain JSON, loaded by the zero-dependency core.
 
 ## Status
 
